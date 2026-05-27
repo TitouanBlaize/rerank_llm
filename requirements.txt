@@ -1,0 +1,8 @@
+# Core dependencies
+pydantic==2.13.4
+requests==2.34.2
+python-dotenv==1.2.2
+
+# Development dependencies
+flake8==6.1.0
+pre-commit==3.6.0
