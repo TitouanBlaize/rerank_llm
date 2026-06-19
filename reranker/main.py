@@ -1,11 +1,13 @@
 """
 Main FastAPI application for the Mistral document reranker.
 """
-
+import os
+from mistralai import Mistral
 from fastapi import FastAPI
-from reranker.models.client import Item
 
 app = FastAPI()
+
+client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
 
 
 @app.get("/")
@@ -13,11 +15,11 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/chat/{question}")
+def answer_question(question: str):
+    response = client.chat.complete(
+        model="mistral-medium-3-5",
+        messages=[{"role": "user", "content": question}],
+    )
 
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+    return {"response": response.choices[0].message.content}
